@@ -1,0 +1,34 @@
+<div class="container">
+    <div *ngIf="!authService.isAuth; else notAuth">
+        <h1>Connexion</h1>
+        <div class="bg-img">
+            <div class="containerForm">
+                <form [formGroup]="signInForm" (ngSubmit)="onSubmit()">
+                    <div>
+                        <label class="control-label" for="username"><b>Login</b></label>
+                        <br>
+                        <input type="text" class="form-control" id="username" formControlName="login" placeholder="Entrez un login" name="username" required>
+                    </div>
+                    <br>
+                    <div>
+                        <label class="control-label" for="pwd"><b>Password</b></label>
+                        <input type="password" class="form-control" id="pwd" formControlName="password" placeholder="Entrez un mot de passe" name="pwd" required>
+                    </div>
+                    <br>
+                    <button type="submit" class="btn">Se connecter</button>
+                </form>
+            </div>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <p class="text-danger">{{ errorMessage }}</p>
+
+    </div>
+
+    <ng-template #notAuth>
+        <h1>Vous êtes connecté en tant que {{ this.authService.currentVisiteur.Nom }} {{ this.authService.currentVisiteur.Prenom }}!</h1>
+    </ng-template>
+</div>

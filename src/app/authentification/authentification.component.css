@@ -1,0 +1,61 @@
+.bg-img {
+    /* classe de la div englobant la div avant le formulaire */
+    background-image: url("src/assets/med2.jpg");
+    /* lien vers l'image */
+    /* ajouté pour login avec le formulaire dans image */
+    min-height: 380px;
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: cover;
+    /* contain fait apparaitre toute l'image mais moins grande que la div */
+    position: relative;
+    /* relative permet de changer l'origine de ce qui sera en absolute à l'intérieur */
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+}
+
+.containerForm {
+    position: absolute;
+    /* top bottom left right se font par rapport à l'élément englobant qui lui erst forcément relative */
+    right: 0;
+    /* positionnement à droite essayer avec left */
+    margin: 15px;
+    /* marge de la div containerForm par rapport à son parent div bg-img */
+    height: auto;
+    max-width: 300px;
+    padding: 15px;
+    top: -5px;
+    /* marge pour les éléments internes cad les zones du formulaire */
+    box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;
+    background-color: white;
+}
+
+.bg-img input {
+    width: 100%;
+}
+
+.bg-img button {
+    width: 100%;
+}
+
+.bg-img label {
+    float: left;
+}
+
+.btn {
+    background-color: #1585dc;
+    border-radius: 10px;
+    color: white;
+    padding: 14px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 20%;
+}
+
+.btn:hover {
+    background-color: white;
+    color: #1585dc;
+    border: 1px solid #1585dc;
+}
