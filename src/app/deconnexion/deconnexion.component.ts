@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-deconnexion',
@@ -8,9 +9,14 @@ import { AuthService } from '../services/auth.service';
 })
 export class DeconnexionComponent implements OnInit {
 
-  constructor(public AuthService: AuthService) { }
+  constructor(private AuthService: AuthService,
+    private router: Router) { }
 
   ngOnInit(): void {
   }
 
+  signOutUser() {
+    this.AuthService.isAuth = false;
+    this.router.navigate(['/Connexion']);
+  }
 }

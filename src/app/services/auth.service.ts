@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { Router } from '@angular/router';
 import { ApiService } from "./api.service";
 
 @Injectable({
@@ -10,8 +9,7 @@ export class AuthService {
     tabVisiteur: any = [];
     currentVisiteur : any;
 
-    constructor(private router: Router,
-        private ApiService: ApiService) { }
+    constructor(private ApiService: ApiService) { }
 
     signInUser(login: string, password: string) {
         return new Promise(
@@ -31,11 +29,6 @@ export class AuthService {
                 });
             }
         );
-    }
-
-    signOutUser() {
-        this.isAuth = false;
-        this.router.navigate(['/Connexion']);
     }
 
 }
