@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
 import { ApiService } from '../services/api.service';
 import { AuthService } from '../services/auth.service';
 
@@ -134,6 +133,8 @@ export class GpsComponent implements OnInit {
   }*/
 
   DisplayMedecinsToVisit() {
+    let AnneeMois = this.getMonthTwoDigits();
+
     this.ApiService.GetAllPresenters().subscribe((Presenters: any) => {
       this.ApiService.GetAllMedecins().subscribe((Medecins: any) => {
         this.ApiService.GetAllMedicaments().subscribe((Medicaments: any) => {
@@ -144,10 +145,10 @@ export class GpsComponent implements OnInit {
             }
           });
 
-          this.tabCurrentVisitPresenter.forEach((UnPresenterVist: any) => {
+          this.tabCurrentVisitPresenter.forEach((UnPresenterVisit: any) => {
             Medecins.forEach((UnMedecin: any) => {
               // on récupère les médecins à visiter (pour le visiteur connecté)
-              if (UnMedecin.Id === UnPresenterVist.Id_medecin) {
+              if (UnMedecin.Id === UnPresenterVisit.Id_medecin && UnPresenterVisit.AnneeMois === AnneeMois) {
                 // ce if else => pour éviter les doublons dans le tableau des médecins à visiter
                 if (this.tabCurrentVisitMedecin.length > 0) {
                   let alreadyExists = false;
@@ -172,7 +173,7 @@ export class GpsComponent implements OnInit {
               let CurrentMedecinMedicaments = "";
               Medicaments.forEach((UnMedicament: any) => {
                 this.tabCurrentVisitPresenter.forEach((UnPresenterVisit: any) => {
-                  if (UnMedicament.Id === UnPresenterVisit.Id_med && UnMedecinVisit.Id === UnPresenterVisit.Id_medecin) {
+                  if (UnMedicament.Id === UnPresenterVisit.Id_med && UnMedecinVisit.Id === UnPresenterVisit.Id_medecin && UnPresenterVisit.AnneeMois === AnneeMois) {
                     CurrentMedecinMedicaments+= "<li>" + UnMedicament.Nom + "</li>";
                   }
                 });
@@ -196,5 +197,15 @@ export class GpsComponent implements OnInit {
         });
       });
     });
+  }
+
+  getMonthTwoDigits(){
+    let date = new Date();
+
+    if(date.getMonth()+1 < 10){
+      return date.getFullYear()+"0"+(date.getMonth()+1)
+    }else{
+      return date.getFullYear()+""+(date.getMonth()+1)
+    }
   }
 }
