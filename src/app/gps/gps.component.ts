@@ -190,7 +190,7 @@ export class GpsComponent implements OnInit {
                 "<ul>" +
                 CurrentMedecinMedicaments +
                 "</ul>" +
-                "<a href='http://localhost/akagami/php/php_noteMed/seConnecter.php?sLogin="+this.AuthService.currentVisiteur.Login+"&sMdp="+this.AuthService.currentVisiteur.Mdp+"' target='__blank'>Voir plus</a>");
+                "<a href='http://localhost/akagami/Github/PPE_finAnnee_BTS/PPE-examen_PHP/seConnecter.php?sLogin="+this.AuthService.currentVisiteur.Login+"&sMdp="+this.AuthService.currentVisiteur.Mdp+"' target='__blank'>Voir plus</a>");
               MedecinLocationMarker.addTo(this.myMap);
             });
           });
