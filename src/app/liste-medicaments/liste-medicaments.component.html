@@ -1,1 +1,24 @@
-<p>liste-medicaments works!</p>
+<mat-table [dataSource]="listMedicaments" class="mat-elevation-z8">
+    <ng-container matColumnDef="Nom">
+        <mat-header-cell *matHeaderCellDef> Nom </mat-header-cell>
+        <mat-cell *matCellDef="let medicament"> {{medicament.Nom}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Photo">
+        <mat-header-cell *matHeaderCellDef> Image </mat-header-cell>
+        <mat-cell *matCellDef="let medicament"> <img class='card-img-top' src='data:image/jpeg;base64,{{ medicament.Photo }}' height="200" width="10"> </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Description">
+        <mat-header-cell *matHeaderCellDef> Description </mat-header-cell>
+        <mat-cell *matCellDef="let medicament"> {{medicament.Description}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Categorie">
+        <mat-header-cell *matHeaderCellDef> Catégorie </mat-header-cell>
+        <mat-cell *matCellDef="let medicament"> {{medicament.Categorie}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
