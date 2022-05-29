@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-liste-visiteurs',
@@ -6,10 +7,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./liste-visiteurs.component.css']
 })
 export class ListeVisiteursComponent implements OnInit {
+  ListVisiteurs: any = []
 
-  constructor() { }
+  constructor(private ApiService : ApiService) { }
 
   ngOnInit(): void {
+    this.ApiService.GetAllVisiteurs().subscribe(Result => {
+      this.ListVisiteurs = Result
+    })
   }
 
 }
