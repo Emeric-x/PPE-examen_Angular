@@ -20,6 +20,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from './services/api.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatTableModule } from '@angular/material/table';
 
 const appRoutes: Routes = [
   { path: '', component: AccueilComponent },
@@ -55,7 +56,8 @@ const appRoutes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    MatSliderModule
+    MatSliderModule,
+    MatTableModule
   ],
   providers: [
     AuthService,

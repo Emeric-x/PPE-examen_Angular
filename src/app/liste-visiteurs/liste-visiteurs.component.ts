@@ -7,14 +7,14 @@ import { ApiService } from '../services/api.service';
   styleUrls: ['./liste-visiteurs.component.css']
 })
 export class ListeVisiteursComponent implements OnInit {
-  ListVisiteurs: any = []
+  displayedColumns: string[] = ['Nom', 'Prenom', 'Ville', 'Region'];
+  listVisiteurs: any = []
 
   constructor(private ApiService : ApiService) { }
 
   ngOnInit(): void {
     this.ApiService.GetAllVisiteurs().subscribe(Result => {
-      this.ListVisiteurs = Result
+      this.listVisiteurs = Result
     })
   }
-
 }

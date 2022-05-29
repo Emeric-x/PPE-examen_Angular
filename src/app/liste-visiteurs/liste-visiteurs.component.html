@@ -1,1 +1,24 @@
-<p>liste-visiteurs works!</p>
+<mat-table [dataSource]="listVisiteurs" class="mat-elevation-z8">
+    <ng-container matColumnDef="Nom">
+        <mat-header-cell *matHeaderCellDef> Nom </mat-header-cell>
+        <mat-cell *matCellDef="let visiteur"> {{visiteur.Nom}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Prenom">
+        <mat-header-cell *matHeaderCellDef> Prénom </mat-header-cell>
+        <mat-cell *matCellDef="let visiteur"> {{visiteur.Prenom}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Ville">
+        <mat-header-cell *matHeaderCellDef> Ville </mat-header-cell>
+        <mat-cell *matCellDef="let visiteur"> {{visiteur.Ville}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Region">
+        <mat-header-cell *matHeaderCellDef> Région </mat-header-cell>
+        <mat-cell *matCellDef="let visiteur"> {{visiteur.Region}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
