@@ -139,16 +139,12 @@ export class GpsComponent implements OnInit {
     this.ApiService.GetAllPresenters().subscribe((Presenters: any) => {
       this.ApiService.GetAllMedecins().subscribe((Medecins: any) => {
         this.ApiService.GetAllMedicaments().subscribe((Medicaments: any) => {
-          Presenters.forEach((UnPresenter: any) => {
-            // on récupère uniquement les présenters du visiteur connecté (obligé de le faire ici car impossible de déclarer AuthService (pour récupérer l'id du visiteur connecté) dans ApiService car circular depedency)
-            if (UnPresenter.Id_visit == this.AuthService.currentVisiteur.Id && UnPresenter.AnneeMois === AnneeMois) {
-              this.tabCurrentVisitPresenter.push(UnPresenter);
-            }
-          });
+          // on récupère uniquement les présenters du visiteur connecté (obligé de le faire ici car impossible de déclarer AuthService (pour récupérer l'id du visiteur connecté) dans ApiService car circular depedency)
+          this.GetPresentersForCurrentVisiteur(Presenters, AnneeMois)
 
           this.tabCurrentVisitPresenter.forEach((UnPresenterVisit: any) => {
             Medecins.forEach((UnMedecin: any) => {
-              // on récupère les objets médecins à visiter (pour le visiteur connecté)
+              // on récupère les objets médecins à visiter qui correspondent aux id_medecin des objets presenter(pour le visiteur connecté)
               if (UnMedecin.Id === UnPresenterVisit.Id_medecin) {
                 // ce if else => pour éviter les doublons dans le tableau des médecins à visiter
                 if (this.tabCurrentVisitMedecin.length > 0) {
@@ -189,6 +185,14 @@ export class GpsComponent implements OnInit {
           });
         });
       });
+    });
+  }
+
+  GetPresentersForCurrentVisiteur(sPresenters: any, sAnneeMois: any){
+    sPresenters.forEach((UnPresenter: any) => {
+      if (UnPresenter.Id_visit == this.AuthService.currentVisiteur.Id && UnPresenter.AnneeMois === sAnneeMois) {
+        this.tabCurrentVisitPresenter.push(UnPresenter);
+      }
     });
   }
 
