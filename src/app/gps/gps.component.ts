@@ -75,70 +75,13 @@ export class GpsComponent implements OnInit {
     })
   }
 
-  /*GetPresentersByIdVisit() {
-    this.ApiService.GetAllPresenters().subscribe(Result => {
-      this.tabPresenters = Result;
-
-      this.tabPresenters.forEach((UnPresenter: any) => {
-        if (UnPresenter.Id_visit == this.AuthService.currentVisiteur.Id) {
-          this.tabCurrentVisitPresenter.push(UnPresenter);
-        }
-      });
-    });
-  }
-
-  GetMedecinsByPresenter() {
-    this.ApiService.GetAllMedecins().subscribe(Result => {
-      this.tabMedecins = Result;
-
-      this.tabCurrentVisitPresenter.forEach((UnPresenter: any) => {
-        this.tabMedecins.forEach((UnMedecin: any) => {
-          if (UnMedecin.Id === UnPresenter.Id_medecin) {
-            if (this.tabCurrentVisitMedecin.length > 0) { // ce if else => pour éviter les doublons dans le tableau
-              let alreadyExists = false;
-              this.tabCurrentVisitMedecin.forEach((UnMedecinVisit: any) => {
-                if (UnMedecinVisit.Id === UnMedecin.Id) {
-                  alreadyExists = true;
-                }
-              });
-              if (alreadyExists === false) {
-                this.tabCurrentVisitMedecin.push(UnMedecin);
-              }
-            } else {
-              this.tabCurrentVisitMedecin.push(UnMedecin);
-            }
-          }
-        });
-      });
-    });
-  }
-
-  GetMedecinsPresenterLocations() {
-    /*this.tabCurrentVisitMedecin.forEach((UnMedecinLocation: any) => {
-      this.ApiService.GetMedecinLocation(UnMedecinLocation.Adresse + ", " + UnMedecinLocation.Ville).subscribe(Result => {
-        this.tabMedecinsLocations.push(Result);
-      });
-    });
-    this.ApiService.GetMedecinLocation("3 avenue de la gare, Cluses").subscribe(Result => {
-      this.tabCurrentVisitMedecin.forEach((UnMedecinVisit: any) => {
-        this.ApiService.GetMedecinLocation(UnMedecinVisit.Adresse + ", " + UnMedecinVisit.Ville).subscribe(Result => {
-          this.tabMedecinsLocations.push(Result);
-
-          this.tabMedecinsLocations.forEach((MedecinLocation: any) => {
-            let MedecinLocationMarker = L.marker([MedecinLocation[0].lat, MedecinLocation[0].lon]).bindPopup(UnMedecinVisit.Nom + " " + UnMedecinVisit.Prenom);
-            MedecinLocationMarker.addTo(this.myMap);
-          });
-        });
-      });
-    });
-  }*/
-
   DisplayMedecinsToVisit() {
     let AnneeMois = this.getMonthTwoDigits();
 
     this.ApiService.GetAllPresenters().subscribe((Presenters: any) => {
       this.ApiService.GetAllMedecins().subscribe((Medecins: any) => {
         this.ApiService.GetAllMedicaments().subscribe((Medicaments: any) => {
+
           // on récupère uniquement les présenters du visiteur connecté (obligé de le faire ici car impossible de déclarer AuthService (pour récupérer l'id du visiteur connecté) dans ApiService car circular depedency)
           this.GetPresentersForCurrentVisiteur(Presenters, AnneeMois)
 
@@ -147,20 +90,15 @@ export class GpsComponent implements OnInit {
 
           let i = 0;
           this.tabCurrentVisitMedecin.forEach((UnMedecinVisit: any) => {
-            // conversion adresse en latitude/longitude puis affichage du marker sur la map
-            this.ApiService.GetMedecinLocation(UnMedecinVisit.Adresse + ", " + UnMedecinVisit.Ville).subscribe((UnMedecinLocation: any) => {
-              let CurrentMedecinMedicaments = "";
-              Medicaments.forEach((UnMedicament: any) => {
-                this.tabCurrentVisitPresenter.forEach((UnPresenterVisit: any) => {
-                  if (UnMedicament.Id === UnPresenterVisit.Id_med && UnMedecinVisit.Id === UnPresenterVisit.Id_medecin && UnPresenterVisit.AnneeMois === AnneeMois) {
-                    CurrentMedecinMedicaments += "<li>" + UnMedicament.Nom + "</li>";
-                  }
-                });
-              });
 
+            // conversion adresse en latitude/longitude puis affichage de markers correspondant aux médecins à visiter sur la map
+            this.ApiService.GetMedecinLocation(UnMedecinVisit.Adresse + ", " + UnMedecinVisit.Ville).subscribe((UnMedecinLocation: any) => {
+              
+              // récupération des médicaments à présenter pour chaque médecin
+              let CurrentMedecinMedicaments = this.GetMedicamentsToPresentByMedecin(Medicaments, UnMedecinVisit, AnneeMois)
             
-              // ajout PopUp pour chaque marker médecin affiché sur la map
-              this.AddPopUpOnMarker(UnMedecinLocation, UnMedecinVisit, CurrentMedecinMedicaments, i);
+              // ajout Marker et PopUp pour chaque médecin à visiter
+              this.AddMarkerAndPopUp(UnMedecinLocation, UnMedecinVisit, CurrentMedecinMedicaments, i);
               i++;
             });
           });
@@ -201,7 +139,20 @@ export class GpsComponent implements OnInit {
     });
   }
 
-  AddPopUpOnMarker(sUnMedecinLocation: any, sUnMedecinVisit: any, sCurrentMedecinMedicaments: any, i: number){
+  GetMedicamentsToPresentByMedecin(sMedicaments: any, sUnMedecinVisit: any, sAnneeMois: any){
+    let MedicamentsRetour = ""
+    sMedicaments.forEach((UnMedicament: any) => {
+      this.tabCurrentVisitPresenter.forEach((UnPresenterVisit: any) => {
+        if (UnMedicament.Id === UnPresenterVisit.Id_med && sUnMedecinVisit.Id === UnPresenterVisit.Id_medecin && UnPresenterVisit.AnneeMois === sAnneeMois) {
+          MedicamentsRetour += "<li>" + UnMedicament.Nom + "</li>";
+        }
+      });
+    });
+
+    return MedicamentsRetour
+  }
+
+  AddMarkerAndPopUp(sUnMedecinLocation: any, sUnMedecinVisit: any, sCurrentMedecinMedicaments: any, i: number){
     let MedecinLocationMarker = L.marker([sUnMedecinLocation[0].lat, sUnMedecinLocation[0].lon], {opacity: this.SetMarkerOpacity(this.tabCurrentVisitPresenter[i].IsVisite)}).bindPopup(
       "<b>Nom du médecin</b> : " +
       sUnMedecinVisit.Nom +
