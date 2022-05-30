@@ -10,20 +10,21 @@ declare const L: any;
   styleUrls: ['./gps.component.css']
 })
 export class GpsComponent implements OnInit {
-  myMap = null;
+  myMap: any;
   tabPresenters: any = [];
   tabCurrentVisitPresenter: any = [];
   tabMedecins: any = [];
   tabCurrentVisitMedecin: any = [];
   tabMedecinsLocations: any = [];
 
-  constructor(private ApiService: ApiService,
-    private AuthService: AuthService) { }
+  constructor(private ApiService: ApiService, private AuthService: AuthService) { }
 
   ngOnInit(): void {
     if (!navigator.geolocation) {
       console.log('location is not supported !');
     }
+
+    this.myMap = null
 
     navigator.geolocation.getCurrentPosition((position) => {
       this.myMap = L.map('map').setView([position.coords.latitude, position.coords.longitude], 13);
@@ -174,7 +175,7 @@ export class GpsComponent implements OnInit {
               Medicaments.forEach((UnMedicament: any) => {
                 this.tabCurrentVisitPresenter.forEach((UnPresenterVisit: any) => {
                   if (UnMedicament.Id === UnPresenterVisit.Id_med && UnMedecinVisit.Id === UnPresenterVisit.Id_medecin && UnPresenterVisit.AnneeMois === AnneeMois) {
-                    CurrentMedecinMedicaments+= "<li>" + UnMedicament.Nom + "</li>";
+                    CurrentMedecinMedicaments += "<li>" + UnMedicament.Nom + "</li>";
                   }
                 });
               });
@@ -190,7 +191,7 @@ export class GpsComponent implements OnInit {
                 "<ul>" +
                 CurrentMedecinMedicaments +
                 "</ul>" +
-                "<a href='http://localhost/akagami/Github/PPE_finAnnee_BTS/PPE-examen_PHP/seConnecter.php?sLogin="+this.AuthService.currentVisiteur.Login+"&sMdp="+this.AuthService.currentVisiteur.Mdp+"' target='__blank'>Voir plus</a>");
+                "<a href='http://localhost/akagami/Github/PPE_finAnnee_BTS/PPE-examen_PHP/seConnecter.php?sLogin=" + this.AuthService.currentVisiteur.Login + "&sMdp=" + this.AuthService.currentVisiteur.Mdp + "' target='__blank'>Voir plus</a>");
               MedecinLocationMarker.addTo(this.myMap);
             });
           });
@@ -199,13 +200,13 @@ export class GpsComponent implements OnInit {
     });
   }
 
-  getMonthTwoDigits(){
+  getMonthTwoDigits() {
     let date = new Date();
 
-    if(date.getMonth()+1 < 10){
-      return date.getFullYear()+"0"+(date.getMonth()+1)
-    }else{
-      return date.getFullYear()+""+(date.getMonth()+1)
+    if (date.getMonth() + 1 < 10) {
+      return date.getFullYear() + "0" + (date.getMonth() + 1)
+    } else {
+      return date.getFullYear() + "" + (date.getMonth() + 1)
     }
   }
 }
