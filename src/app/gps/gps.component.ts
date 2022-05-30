@@ -141,15 +141,15 @@ export class GpsComponent implements OnInit {
         this.ApiService.GetAllMedicaments().subscribe((Medicaments: any) => {
           Presenters.forEach((UnPresenter: any) => {
             // on récupère uniquement les présenters du visiteur connecté (obligé de le faire ici car impossible de déclarer AuthService (pour récupérer l'id du visiteur connecté) dans ApiService car circular depedency)
-            if (UnPresenter.Id_visit == this.AuthService.currentVisiteur.Id) {
+            if (UnPresenter.Id_visit == this.AuthService.currentVisiteur.Id && UnPresenter.AnneeMois === AnneeMois) {
               this.tabCurrentVisitPresenter.push(UnPresenter);
             }
           });
 
           this.tabCurrentVisitPresenter.forEach((UnPresenterVisit: any) => {
             Medecins.forEach((UnMedecin: any) => {
-              // on récupère les médecins à visiter (pour le visiteur connecté)
-              if (UnMedecin.Id === UnPresenterVisit.Id_medecin && UnPresenterVisit.AnneeMois === AnneeMois) {
+              // on récupère les objets médecins à visiter (pour le visiteur connecté)
+              if (UnMedecin.Id === UnPresenterVisit.Id_medecin) {
                 // ce if else => pour éviter les doublons dans le tableau des médecins à visiter
                 if (this.tabCurrentVisitMedecin.length > 0) {
                   let alreadyExists = false;
@@ -168,6 +168,7 @@ export class GpsComponent implements OnInit {
             });
           });
 
+          let i = 0;
           this.tabCurrentVisitMedecin.forEach((UnMedecinVisit: any) => {
             // conversion adresse en latitude/longitude puis affichage du marker sur la map
             this.ApiService.GetMedecinLocation(UnMedecinVisit.Adresse + ", " + UnMedecinVisit.Ville).subscribe((UnMedecinLocation: any) => {
@@ -180,24 +181,56 @@ export class GpsComponent implements OnInit {
                 });
               });
 
+            
               // ajout PopUp pour chaque marker médecin affiché sur la map
-              let MedecinLocationMarker = L.marker([UnMedecinLocation[0].lat, UnMedecinLocation[0].lon]).bindPopup(
-                "<b>Nom du médecin</b> : " +
-                UnMedecinVisit.Nom +
-                " " +
-                UnMedecinVisit.Prenom +
-                "<br><br>" +
-                "<b>Médicaments à présenter</b> :" +
-                "<ul>" +
-                CurrentMedecinMedicaments +
-                "</ul>" +
-                "<a href='http://localhost/akagami/Github/PPE_finAnnee_BTS/PPE-examen_PHP/seConnecter.php?sLogin=" + this.AuthService.currentVisiteur.Login + "&sMdp=" + this.AuthService.currentVisiteur.Mdp + "' target='__blank'>Voir plus</a>");
-              MedecinLocationMarker.addTo(this.myMap);
+              this.AddPopUpOnMarker(UnMedecinLocation, UnMedecinVisit, CurrentMedecinMedicaments, i);
+              i++;
             });
           });
         });
       });
     });
+  }
+
+  AddPopUpOnMarker(sUnMedecinLocation: any, sUnMedecinVisit: any, sCurrentMedecinMedicaments: any, i: number){
+    let MedecinLocationMarker = L.marker([sUnMedecinLocation[0].lat, sUnMedecinLocation[0].lon], {opacity: this.SetMarkerOpacity(this.tabCurrentVisitPresenter[i].IsVisite)}).bindPopup(
+      "<b>Nom du médecin</b> : " +
+      sUnMedecinVisit.Nom +
+      " " +
+      sUnMedecinVisit.Prenom +
+      "<br><br>" +
+      "<b>Médicaments à présenter</b> :" +
+      "<ul>" +
+      sCurrentMedecinMedicaments +
+      "</ul>" +
+      "<a href='http://localhost/akagami/Github/PPE_finAnnee_BTS/PPE-examen_PHP/seConnecter.php?sLogin=" + this.AuthService.currentVisiteur.Login + "&sMdp=" + this.AuthService.currentVisiteur.Mdp + "' target='__blank'>Voir plus</a>" +
+      "<br><br>" +
+      this.SetInputCheckBox(this.tabCurrentVisitPresenter[i].IsVisite, i));
+    MedecinLocationMarker.addTo(this.myMap);
+  }
+
+  SetInputCheckBox(sIsVisite: boolean, i: number){
+    let inputChecked = "";
+    if(sIsVisite){
+      inputChecked = `<label for='isVisite${i}'>Visité &nbsp</label><input name='isVisite${i}' id='isVisite${i}' type='checkbox' checked (click)='this.test()'>`
+    }else{
+      inputChecked = `<label for='isVisite${i}'>Visité &nbsp</label><input name='isVisite${i}' id='isVisite${i}' type='checkbox'>`
+    }
+    return inputChecked
+  }
+
+  SetMarkerOpacity(sIsVisite: boolean){
+    let opacity = 0;
+    if(sIsVisite){
+      opacity = 0.5
+    }else{
+      opacity = 1
+    }
+    return opacity
+  }
+
+  test(){
+    alert('ok')
   }
 
   getMonthTwoDigits() {
