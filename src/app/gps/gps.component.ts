@@ -142,27 +142,8 @@ export class GpsComponent implements OnInit {
           // on récupère uniquement les présenters du visiteur connecté (obligé de le faire ici car impossible de déclarer AuthService (pour récupérer l'id du visiteur connecté) dans ApiService car circular depedency)
           this.GetPresentersForCurrentVisiteur(Presenters, AnneeMois)
 
-          this.tabCurrentVisitPresenter.forEach((UnPresenterVisit: any) => {
-            Medecins.forEach((UnMedecin: any) => {
-              // on récupère les objets médecins à visiter qui correspondent aux id_medecin des objets presenter(pour le visiteur connecté)
-              if (UnMedecin.Id === UnPresenterVisit.Id_medecin) {
-                // ce if else => pour éviter les doublons dans le tableau des médecins à visiter
-                if (this.tabCurrentVisitMedecin.length > 0) {
-                  let alreadyExists = false;
-                  this.tabCurrentVisitMedecin.forEach((UnMedecinVisit: any) => {
-                    if (UnMedecinVisit.Id === UnMedecin.Id) {
-                      alreadyExists = true;
-                    }
-                  });
-                  if (alreadyExists === false) {
-                    this.tabCurrentVisitMedecin.push(UnMedecin);
-                  }
-                } else {
-                  this.tabCurrentVisitMedecin.push(UnMedecin);
-                }
-              }
-            });
-          });
+          // on récupère les objets médecins à visiter qui correspondent aux id_medecin des objets presenter(pour le visiteur connecté)
+          this.GetMedecinsFromPresenters(Medecins)
 
           let i = 0;
           this.tabCurrentVisitMedecin.forEach((UnMedecinVisit: any) => {
@@ -193,6 +174,30 @@ export class GpsComponent implements OnInit {
       if (UnPresenter.Id_visit == this.AuthService.currentVisiteur.Id && UnPresenter.AnneeMois === sAnneeMois) {
         this.tabCurrentVisitPresenter.push(UnPresenter);
       }
+    });
+  }
+
+  GetMedecinsFromPresenters(sMedecins: any){
+    this.tabCurrentVisitPresenter.forEach((UnPresenterVisit: any) => {
+      sMedecins.forEach((UnMedecin: any) => {
+        // on récupère les objets médecins à visiter qui correspondent aux id_medecin des objets presenter(pour le visiteur connecté)
+        if (UnMedecin.Id === UnPresenterVisit.Id_medecin) {
+          // ce if else => pour éviter les doublons dans le tableau des médecins à visiter
+          if (this.tabCurrentVisitMedecin.length > 0) {
+            let alreadyExists = false;
+            this.tabCurrentVisitMedecin.forEach((UnMedecinVisit: any) => {
+              if (UnMedecinVisit.Id === UnMedecin.Id) {
+                alreadyExists = true;
+              }
+            });
+            if (alreadyExists === false) {
+              this.tabCurrentVisitMedecin.push(UnMedecin);
+            }
+          } else {
+            this.tabCurrentVisitMedecin.push(UnMedecin);
+          }
+        }
+      });
     });
   }
 
