@@ -10,7 +10,7 @@ declare const L: any;
   styleUrls: ['./gps.component.css']
 })
 export class GpsComponent implements OnInit {
-  myMap: any;
+  myMap: any = null;
   tabPresenters: any = [];
   tabCurrentVisitPresenter: any = [];
   tabMedecins: any = [];
@@ -24,8 +24,12 @@ export class GpsComponent implements OnInit {
       console.log('location is not supported !');
     }
 
-    this.myMap = null
+    this.SetMap();
 
+    //this.watchPosition();
+  }
+
+  SetMap(){
     navigator.geolocation.getCurrentPosition((position) => {
       this.myMap = L.map('map').setView([position.coords.latitude, position.coords.longitude], 13);
 
@@ -53,8 +57,6 @@ export class GpsComponent implements OnInit {
         routeWhileDragging: true
       }).addTo(myMap);*/
     });
-
-    this.watchPosition();
   }
 
   watchPosition() {
@@ -118,7 +120,6 @@ export class GpsComponent implements OnInit {
   GetMedecinsFromPresenters(sMedecins: any){
     this.tabCurrentVisitPresenter.forEach((UnPresenterVisit: any) => {
       sMedecins.forEach((UnMedecin: any) => {
-        // on récupère les objets médecins à visiter qui correspondent aux id_medecin des objets presenter(pour le visiteur connecté)
         if (UnMedecin.Id === UnPresenterVisit.Id_medecin) {
           // ce if else => pour éviter les doublons dans le tableau des médecins à visiter
           if (this.tabCurrentVisitMedecin.length > 0) {
@@ -163,7 +164,7 @@ export class GpsComponent implements OnInit {
       "<ul>" +
       sCurrentMedecinMedicaments +
       "</ul>" +
-      "<a href='http://localhost/akagami/Github/PPE_finAnnee_BTS/PPE-examen_PHP/seConnecter.php?sLogin=" + this.AuthService.currentVisiteur.Login + "&sMdp=" + this.AuthService.currentVisiteur.Mdp + "' target='__blank'>Voir plus</a>" +
+      "<a href='http://localhost/akagami/Github/PPE_finAnnee_BTS/PPE-examen_PHP/seConnecter.php?sLogin=" + this.AuthService.currentVisiteur.Login + "&sMdp=" + this.AuthService.currentVisiteur.Mdp + "' target='__blank' class='btn btn-info'>Voir plus</a>" +
       "<br><br>" +
       this.SetInputCheckBox(this.tabCurrentVisitPresenter[i].IsVisite, i));
     MedecinLocationMarker.addTo(this.myMap);
@@ -174,7 +175,7 @@ export class GpsComponent implements OnInit {
     if(sIsVisite){
       inputChecked = `<label for='isVisite${i}'>Visité &nbsp</label><input name='isVisite${i}' id='isVisite${i}' type='checkbox' checked (click)='this.test()'>`
     }else{
-      inputChecked = `<label for='isVisite${i}'>Visité &nbsp</label><input name='isVisite${i}' id='isVisite${i}' type='checkbox'>`
+      inputChecked = `<label for='isVisite${i}'>Visité &nbsp</label><input name='isVisite${i}' id='isVisite${i}' type='checkbox' (click)='this.test()'>`
     }
     return inputChecked
   }

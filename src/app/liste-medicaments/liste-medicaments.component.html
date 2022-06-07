@@ -1,4 +1,11 @@
-<mat-table [dataSource]="listMedicaments" class="mat-elevation-z8">
+<label for="filtreTab">Saisir une chaîne</label>
+<input [(ngModel)]="chaineSaisie" type="text" name="filtreTab">
+<button (click)="this.triTab(chaineSaisie)" class="btn btn-primary">Filtrer</button>
+
+<br>
+<br>
+
+<mat-table [dataSource]="copieListMedicaments" class="mat-elevation-z8" *ngIf="this.copieListMedicaments.length>0; else empty">
     <ng-container matColumnDef="Nom">
         <mat-header-cell *matHeaderCellDef> Nom </mat-header-cell>
         <mat-cell *matCellDef="let medicament"> {{medicament.Nom}} </mat-cell>
@@ -22,3 +29,8 @@
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 </mat-table>
+
+<br>
+<br>
+
+<ng-template #empty>{{ this.emptyTab }}</ng-template>
